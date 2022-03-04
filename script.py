@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from selenium import webdriver
 import time
+from datetime import datetime
+import csv
 
 url = "https://sede.administracionespublicas.gob.es/icpplustieb/index"
 driver = webdriver.Chrome(executable_path="./chromedriver")
@@ -23,5 +25,13 @@ inputElement = driver.find_element_by_id("txtDesCitado")
 inputElement.send_keys('emanuel sanchez')
 driver.find_element_by_id("btnEnviar").click()
 driver.find_element_by_id("btnEnviar").click()
-text = driver.find_element_by_class_name('mf-msg__info').text
-print (text)
+try:
+    text = driver.find_element_by_class_name('mf-msg__info').text
+    text = text[:40]
+except:
+    text ="Class not found"
+
+csv_file = open("results.csv", "a")
+csv_writer = csv.writer(csv_file)
+csv_writer.writerow([str(datetime.now().strftime('%Y_%m_%d_%H_%M')), text])
+csv_file.close()
